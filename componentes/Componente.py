@@ -1,16 +1,12 @@
 class Componente:
-    def __init__(self, nombre: str, tipo_componente: str):
+    def __init__(self, id: str, nombre: str, tipo_componente: str):
+        self.id = id
         self.nombre: str = nombre
-        self.tipo_componente: str = tipo_componente  # "generador", "fila", etc.
-        self.entradas: list = []
-        self.salidas: list = []
-    
-    def conectarSalida(self, otro_componente: 'Componente'):
-        if otro_componente not in self.salidas:
-            self.salidas.append(otro_componente)
-        if self not in otro_componente.entradas:
-            otro_componente.entradas.append(self)
-    
+        self.tipo_componente: str = tipo_componente
+        self.io = {}
+        self.params = {}
+
+
     def obtenerDatos(self) -> str:
         
         return f"{self.tipo_componente}: {self.nombre}"

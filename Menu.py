@@ -5,6 +5,10 @@ from Proceso import Proceso
 class Menu:
     def __init__(self):
         self.console = Console()
+        self.procesoActual = None
+
+    def __repr__(self) -> str:
+        return f"Menu(console={self.console}, procesoActual={self.procesoActual})"
         
     def iniciar(self):
         while True:
@@ -13,15 +17,17 @@ class Menu:
             
             if opcion == "1":
                 self.console.print("Crear nuevo proceso")
-                nombreProceso = input("Ingrese el nombre del proceso")
-                Proceso(nombreProceso)
+                nombreProceso = input("Ingrese el nombre del proceso: ")
+                self.procesoActual = Proceso(nombreProceso)
+
 
             elif opcion == "2":
                 self.console.print("Cargar proceso (no implementado aún)")
             elif opcion == "3":
                 self.console.print("Editar proceso (no implementado aún)")
             elif opcion == "4":
-                self.console.print("Mostrar proceso (no implementado aún)")
+                self.console.print("Mostrar proceso")
+                self.console.print
             elif opcion == "5":
                 self.console.print("Guardar proceso (no implementado aún)")
             elif opcion == "6":
