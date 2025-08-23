@@ -6,7 +6,6 @@ class Componente:
         self.salidas: list = []
     
     def conectarSalida(self, otro_componente: 'Componente'):
-        """Conecta este componente con otro (este → otro)"""
         if otro_componente not in self.salidas:
             self.salidas.append(otro_componente)
         if self not in otro_componente.entradas:

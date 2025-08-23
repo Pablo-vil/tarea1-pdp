@@ -1,5 +1,5 @@
 from typing import Any
-from componentes/Generador import Generador
+from componentes.Generador import Generador
 
 class Proceso:
     def __init__(self, nombre):
@@ -33,12 +33,13 @@ class Proceso:
             for opcion in opciones:
                 print(opcion)
 
-            entrada = input("ingrese una de las opciones")
+            entrada = int(input("ingrese una de las opciones"))
             if entrada == 1:
                 cantidad = int(input("Cuantos generadores quiere agregar? "))
                 for i in range(cantidad):
                     nombre = input(f"Nombre del generador {i+1}: ")
                     gen = Generador(nombre)
+                    self.componentes[nombre] = gen
                 print(f"{cantidad} generador(es) agregado(s)")
                 
             elif entrada == 2:
