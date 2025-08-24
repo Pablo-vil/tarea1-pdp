@@ -1,0 +1,172 @@
+{
+  "name": "empacador_tarro_pelotas",
+  "element_types": [
+    {
+      "id": "pelota",
+      "name": "Pelota"
+    },
+    {
+      "id": "envase",
+      "name": "Envase"
+    },
+    {
+      "id": "tapa",
+      "name": "Tapa"
+    },
+    {
+      "id": "tarro_pelotas",
+      "name": "TarroPelotas"
+    }
+  ],
+  "components": [
+    {
+      "id": "gen_pelotas",
+      "type": "generator",
+      "name": "GeneradorPelotas",
+      "io": {
+        "outputs": [
+          {
+            "port": "out",
+            "element_type": "pelota"
+          }
+        ]
+      },
+      "params": {
+        "element_type": "pelota",
+        "creation": {
+          "type": "exponential",
+          "lambda": 0.1
+        }
+      }
+    },
+    {
+      "id": "gen_envases",
+      "type": "generator",
+      "name": "GeneradorEnvases",
+      "io": {
+        "outputs": [
+          {
+            "port": "out",
+            "element_type": "envase"
+          }
+        ]
+      },
+      "params": {
+        "element_type": "envase",
+        "creation": {
+          "type": "exponential",
+          "lambda": 0.2
+        }
+      }
+    },
+    {
+      "id": "gen_tapas",
+      "type": "generator",
+      "name": "GeneradorTapas",
+      "io": {
+        "outputs": [
+          {
+            "port": "out",
+            "element_type": "tapa"
+          }
+        ]
+      },
+      "params": {
+        "element_type": "tapa",
+        "creation": {
+          "type": "exponential",
+          "lambda": 0.15
+        }
+      }
+    },
+    {
+      "id": "empacador",
+      "type": "consumer",
+      "name": "EmpacadorTarros",
+      "io": {
+        "inputs": [
+          {
+            "port": "in_pelotas",
+            "element_type": "pelota"
+          },
+          {
+            "port": "in_envase",
+            "element_type": "envase"
+          },
+          {
+            "port": "in_tapa",
+            "element_type": "tapa"
+          }
+        ],
+        "outputs": [
+          {
+            "port": "out",
+            "element_type": "tarro_pelotas"
+          }
+        ]
+      },
+      "params": {
+        "iomap": {
+          "inputs": [
+            {
+              "element_type": "pelota",
+              "quantity": 3
+            },
+            {
+              "element_type": "envase",
+              "quantity": 1
+            },
+            {
+              "element_type": "tapa",
+              "quantity": 1
+            }
+          ],
+          "outputs": [
+            {
+              "element_type": "tarro_pelotas",
+              "quantity": 1
+            }
+          ]
+        },
+        "processing_time": {
+          "type": "uniform",
+          "min": 5,
+          "max": 15
+        },
+        "mode": "transform_attributes",
+        "attribute_changes": []
+      }
+    },
+    {
+      "id": "sink1",
+      "type": "sink",
+      "name": "SalidaTarros",
+      "io": {
+        "inputs": [
+          {
+            "port": "in",
+            "element_type": "tarro_pelotas"
+          }
+        ]
+      }
+    }
+  ],
+  "connections": [
+    {
+      "from": "gen_pelotas:out",
+      "to": "empacador:in_pelotas"
+    },
+    {
+      "from": "gen_envases:out",
+      "to": "empacador:in_envase"
+    },
+    {
+      "from": "gen_tapas:out",
+      "to": "empacador:in_tapa"
+    },
+    {
+      "from": "empacador:out",
+      "to": "sink1:in"
+    }
+  ]
+}

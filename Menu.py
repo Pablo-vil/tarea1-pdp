@@ -22,16 +22,19 @@ class Menu:
 
 
             elif opcion == "2":
-                self.console.print("Cargar proceso (no implementado aún)")
+                self.console.print("Cargar proceso wip")
+                self.procesoActual = Proceso("cargado")
+                self.procesoActual.cargar_json()
+                self.console.print("[bold italic blue]archivo cargado[/bold italic blue]")
             elif opcion == "3":
-                self.console.print("Editar proceso (no implementado aún)")
+                self.console.print("Editar proceso wip")
             elif opcion == "4":
                 self.console.print("Mostrar proceso")
                 self.console.print
             elif opcion == "5":
-                self.console.print("Guardar proceso (no implementado aún)")
+                self.console.print("Guardar proceso wip")
             elif opcion == "6":
-                self.console.print("¡Adiós!")
+                self.console.print("byeee")
                 break
             else:
                 self.console.print("Opción no válida")
