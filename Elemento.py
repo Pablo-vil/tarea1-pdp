@@ -2,9 +2,8 @@ from typing import Dict, Any
 from TipoElemento import TipoElemento
 
 class Elemento:
-    def __init__(self, tipo: TipoElemento, tiempo_creacion: float):
+    def __init__(self, tipo: TipoElemento):
         self.tipo: TipoElemento = tipo
-        self.tiempo_creacion: float = tiempo_creacion
         self.caracteristicas: Dict[str, Any] = {}
         self.id_elemento: int = 0
 

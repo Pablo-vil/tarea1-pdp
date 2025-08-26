@@ -1,11 +1,13 @@
 from rich.console import Console
 from rich.prompt import Prompt
 from Proceso import Proceso
+from JsonHandler import JsonHandler
 
 class Menu:
     def __init__(self):
         self.console = Console()
         self.procesoActual = None
+        self.jsonHandler = JsonHandler()
 
     def __repr__(self) -> str:
         return f"Menu(console={self.console}, procesoActual={self.procesoActual})"
@@ -23,16 +25,25 @@ class Menu:
 
             elif opcion == "2":
                 self.console.print("Cargar proceso wip")
-                self.procesoActual = Proceso("cargado")
-                self.procesoActual.cargar_json()
-                self.console.print("[bold italic blue]archivo cargado[/bold italic blue]")
+                self.procesoActual = Proceso("cargando")
+                success = self.jsonHandler.cargar_json(self.procesoActual)
+                if success:
+                    self.console.print("[blue]archivo cargado[/blue]")
+                else:
+                    self.console.print("[red]error al cargar el archivo[/red]")
+            
+            
             elif opcion == "3":
                 self.console.print("Editar proceso wip")
             elif opcion == "4":
                 self.console.print("Mostrar proceso")
-                self.console.print
+                self.console.print(self.procesoActual)
             elif opcion == "5":
                 self.console.print("Guardar proceso wip")
+                if self.procesoActual is not None:
+                    self.jsonHandler.guardar_json(self.procesoActual)
+                else:
+                    self.console.print("[red]No hay proceso actual para guardar.[/red]")
             elif opcion == "6":
                 self.console.print("byeee")
                 break
@@ -53,12 +64,11 @@ class Menu:
             "4. Mostrar proceso",
             "5. Guardar proceso",
             "6. Salir"
-            "\n"
         ]
         
         for opcion in opciones:
             self.console.print(f"  {opcion}")
-        
+        self.console.print("\n")
     
     def pedir_opcion(self) -> str:
         return Prompt.ask("Selecciona una opción", choices=["1", "2", "3", "4", "5", "6"])

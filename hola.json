@@ -1,0 +1,350 @@
+{
+    "name": "banco_entrega_parcial",
+    "element_types": [
+        {
+            "id": "cliente",
+            "name": "Cliente",
+            "attributes": [
+                {
+                    "name": "proposito",
+                    "domain": {
+                        "type": "categorical",
+                        "values": [
+                            "depositar",
+                            "retirar",
+                            "comprar_dolares"
+                        ]
+                    }
+                },
+                {
+                    "name": "vip",
+                    "domain": {
+                        "type": "boolean"
+                    }
+                }
+            ]
+        }
+    ],
+    "components": [
+        {
+            "id": "gen_vip",
+            "type": "generator",
+            "name": "GeneradorVIP",
+            "io": {
+                "outputs": [
+                    {
+                        "port": "out",
+                        "element_type": "cliente"
+                    }
+                ]
+            },
+            "params": {
+                "element_type": "cliente",
+                "creation": {
+                    "type": "exponential",
+                    "lambda": 0.05
+                },
+                "attributes_assignment": [
+                    {
+                        "attribute": "proposito",
+                        "strategy": {
+                            "type": "categorical_probs",
+                            "p": {
+                                "depositar": 0.4,
+                                "retirar": 0.4,
+                                "comprar_dolares": 0.2
+                            }
+                        }
+                    },
+                    {
+                        "attribute": "vip",
+                        "strategy": {
+                            "type": "fixed",
+                            "value": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "gen_regular",
+            "type": "generator",
+            "name": "GeneradorNoVIP",
+            "io": {
+                "outputs": [
+                    {
+                        "port": "out",
+                        "element_type": "cliente"
+                    }
+                ]
+            },
+            "params": {
+                "element_type": "cliente",
+                "creation": {
+                    "type": "exponential",
+                    "lambda": 0.2
+                },
+                "attributes_assignment": [
+                    {
+                        "attribute": "proposito",
+                        "strategy": {
+                            "type": "categorical_probs",
+                            "p": {
+                                "depositar": 0.3,
+                                "retirar": 0.5,
+                                "comprar_dolares": 0.2
+                            }
+                        }
+                    },
+                    {
+                        "attribute": "vip",
+                        "strategy": {
+                            "type": "fixed",
+                            "value": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "q1",
+            "type": "queue",
+            "name": "FilaUnicaPrioritaria",
+            "io": {
+                "inputs": [
+                    {
+                        "port": "in_vip",
+                        "element_type": "cliente"
+                    },
+                    {
+                        "port": "in_regular",
+                        "element_type": "cliente"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "port": "out_c1",
+                        "element_type": "cliente"
+                    },
+                    {
+                        "port": "out_c2",
+                        "element_type": "cliente"
+                    }
+                ]
+            },
+            "params": {
+                "discipline": "priority",
+                "priority": {
+                    "attribute": "vip",
+                    "order": "desc"
+                },
+                "capacity": 0
+            }
+        },
+        {
+            "id": "caja1",
+            "type": "consumer",
+            "name": "Caja1",
+            "io": {
+                "inputs": [
+                    {
+                        "port": "in",
+                        "element_type": "cliente"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "port": "out",
+                        "element_type": "cliente"
+                    }
+                ]
+            },
+            "params": {
+                "iomap": {
+                    "inputs": [
+                        {
+                            "element_type": "cliente",
+                            "quantity": 1
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "element_type": "cliente",
+                            "quantity": 1
+                        }
+                    ]
+                },
+                "processing_time": {
+                    "type": "fixed",
+                    "value": 110
+                },
+                "processing_time_conditional": [
+                    {
+                        "if": {
+                            "element_type": "cliente",
+                            "attribute": "proposito",
+                            "op": "=",
+                            "value": "depositar"
+                        },
+                        "distribution": {
+                            "type": "normal",
+                            "mu": 90,
+                            "sigma": 15
+                        }
+                    },
+                    {
+                        "if": {
+                            "element_type": "cliente",
+                            "attribute": "proposito",
+                            "op": "=",
+                            "value": "retirar"
+                        },
+                        "distribution": {
+                            "type": "uniform",
+                            "min": 100,
+                            "max": 140
+                        }
+                    },
+                    {
+                        "if": {
+                            "element_type": "cliente",
+                            "attribute": "proposito",
+                            "op": "=",
+                            "value": "comprar_dolares"
+                        },
+                        "distribution": {
+                            "type": "fixed",
+                            "value": 150
+                        }
+                    }
+                ],
+                "mode": "transform_attributes",
+                "attribute_changes": []
+            }
+        },
+        {
+            "id": "caja2",
+            "type": "consumer",
+            "name": "Caja2",
+            "io": {
+                "inputs": [
+                    {
+                        "port": "in",
+                        "element_type": "cliente"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "port": "out",
+                        "element_type": "cliente"
+                    }
+                ]
+            },
+            "params": {
+                "iomap": {
+                    "inputs": [
+                        {
+                            "element_type": "cliente",
+                            "quantity": 1
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "element_type": "cliente",
+                            "quantity": 1
+                        }
+                    ]
+                },
+                "processing_time": {
+                    "type": "fixed",
+                    "value": 110
+                },
+                "processing_time_conditional": [
+                    {
+                        "if": {
+                            "element_type": "cliente",
+                            "attribute": "proposito",
+                            "op": "=",
+                            "value": "depositar"
+                        },
+                        "distribution": {
+                            "type": "normal",
+                            "mu": 90,
+                            "sigma": 15
+                        }
+                    },
+                    {
+                        "if": {
+                            "element_type": "cliente",
+                            "attribute": "proposito",
+                            "op": "=",
+                            "value": "retirar"
+                        },
+                        "distribution": {
+                            "type": "uniform",
+                            "min": 100,
+                            "max": 140
+                        }
+                    },
+                    {
+                        "if": {
+                            "element_type": "cliente",
+                            "attribute": "proposito",
+                            "op": "=",
+                            "value": "comprar_dolares"
+                        },
+                        "distribution": {
+                            "type": "fixed",
+                            "value": 150
+                        }
+                    }
+                ],
+                "mode": "transform_attributes",
+                "attribute_changes": []
+            }
+        },
+        {
+            "id": "sink1",
+            "type": "sink",
+            "name": "SalidaBanco",
+            "io": {
+                "inputs": [
+                    {
+                        "port": "in_c1",
+                        "element_type": "cliente"
+                    },
+                    {
+                        "port": "in_c2",
+                        "element_type": "cliente"
+                    }
+                ]
+            }
+        }
+    ],
+    "connections": [
+        {
+            "from": "gen_vip:out",
+            "to": "q1:in_vip"
+        },
+        {
+            "from": "gen_regular:out",
+            "to": "q1:in_regular"
+        },
+        {
+            "from": "q1:out_c1",
+            "to": "caja1:in"
+        },
+        {
+            "from": "q1:out_c2",
+            "to": "caja2:in"
+        },
+        {
+            "from": "caja1:out",
+            "to": "sink1:in_c1"
+        },
+        {
+            "from": "caja2:out",
+            "to": "sink1:in_c2"
+        }
+    ]
+}
