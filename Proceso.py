@@ -1,5 +1,5 @@
 from typing import Any, List, Dict
-from componentes.Generador import Generador
+from componentes.Generator import Generator
 import json
 
 class Proceso:
